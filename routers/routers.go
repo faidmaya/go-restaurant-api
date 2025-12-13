@@ -40,9 +40,9 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 		api.GET("/menus", menuC.List)
 	}
 
-	// ====== ADMIN ROUTES (BASIC AUTH) ======
+	// ====== ADMIN ROUTES (JWT) ======
 	admin := r.Group("/admin")
-	admin.Use(middlewares.BasicAuthMiddleware())
+	admin.Use(middlewares.JWTMiddleware())
 	{
 		admin.POST("/categories", categoryC.Create)
 		admin.POST("/menus", menuC.Create)
