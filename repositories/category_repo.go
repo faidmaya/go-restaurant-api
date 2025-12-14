@@ -33,3 +33,13 @@ func (r *CategoryRepo) GetAll() ([]models.Category, error) {
 	}
 	return out, nil
 }
+
+func (r *CategoryRepo) Update(id, name, description string) error {
+	_, err := r.DB.Exec(`UPDATE categories SET name=$1, description=$2 WHERE id=$3`, name, description, id)
+	return err
+}
+
+func (r *CategoryRepo) Delete(id string) error {
+	_, err := r.DB.Exec(`DELETE FROM categories WHERE id=$1`, id)
+	return err
+}

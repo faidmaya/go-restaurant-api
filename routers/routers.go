@@ -46,6 +46,10 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 	{
 		admin.POST("/categories", categoryC.Create)
 		admin.POST("/menus", menuC.Create)
+		admin.PUT("/categories/:id", categoryC.Update)
+		admin.PUT("/menus/:id", menuC.Update)
+		admin.DELETE("/categories/:id", categoryC.Delete)
+		admin.DELETE("/menus/:id", menuC.Delete)
 	}
 
 	// ====== SECURE ROUTES (JWT) ======

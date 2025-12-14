@@ -33,3 +33,13 @@ func (r *MenuRepo) GetAll() ([]models.Menu, error) {
 	}
 	return out, nil
 }
+
+func (r *MenuRepo) Update(id, name, description string, price float64, categoryID int) error {
+	_, err := r.DB.Exec(`UPDATE menus SET name=$1, description=$2, price=$3, category_id=$4 WHERE id=$5`, name, description, price, categoryID, id)
+	return err
+}
+
+func (r *MenuRepo) Delete(id string) error {
+	_, err := r.DB.Exec(`DELETE FROM menus WHERE id=$1`, id)
+	return err
+}
