@@ -69,3 +69,15 @@ func (oc *OrderController) Create(c *gin.Context) {
 		"total":    total,
 	})
 }
+
+func (oc *OrderController) ListByUser(c *gin.Context) {
+	userID := c.GetInt("user_id")
+
+	orders, err := oc.OrderRepo.FindByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, orders)
+}

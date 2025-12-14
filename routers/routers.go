@@ -53,6 +53,7 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 	secure.Use(middlewares.JWTMiddleware())
 	{
 		secure.POST("/orders", orderC.Create)
+		secure.GET("/orders", orderC.ListByUser)
 	}
 
 	return r
