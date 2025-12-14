@@ -18,8 +18,7 @@ func NewOrderController(or *repositories.OrderRepo) *OrderController {
 }
 
 type createOrderReq struct {
-	UserID int                `json:"user_id" binding:"required"`
-	Items  []models.OrderItem `json:"items" binding:"required"`
+	Items []models.OrderItem `json:"items" binding:"required"`
 }
 
 func (oc *OrderController) Create(c *gin.Context) {
@@ -29,7 +28,19 @@ func (oc *OrderController) Create(c *gin.Context) {
 		return
 	}
 
-	order := &models.Order{UserID: in.UserID, Status: "pending", Total: 0}
+	uid, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
+		return
+	}
+	userID := uid.(int)
+
+	order := &models.Order{
+		UserID: userID,
+		Status: "pending",
+		Total:  0,
+	}
+
 	if err := oc.OrderRepo.Create(order); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -39,6 +50,7 @@ func (oc *OrderController) Create(c *gin.Context) {
 	for i := range in.Items {
 		it := &in.Items[i]
 		it.OrderID = order.ID
+
 		if err := oc.OrderRepo.AddItem(it); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -46,6 +58,14 @@ func (oc *OrderController) Create(c *gin.Context) {
 		total += float64(it.Quantity) * it.Price
 	}
 
-	_, _ = oc.OrderRepo.DB.Exec(`UPDATE orders SET total=$1 WHERE id=$2`, total, order.ID)
-	c.JSON(http.StatusCreated, gin.H{"order_id": order.ID, "total": total})
+	_, _ = oc.OrderRepo.DB.Exec(
+		`UPDATE orders SET total=$1 WHERE id=$2`,
+		total,
+		order.ID,
+	)
+
+	c.JSON(http.StatusCreated, gin.H{
+		"order_id": order.ID,
+		"total":    total,
+	})
 }
