@@ -28,12 +28,12 @@ func (oc *OrderController) Create(c *gin.Context) {
 		return
 	}
 
-	uid, exists := c.Get("user_id")
+	userIDVal, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
 		return
 	}
-	userID := uid.(int)
+	userID := userIDVal.(int)
 
 	order := &models.Order{
 		UserID: userID,

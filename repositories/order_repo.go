@@ -23,7 +23,7 @@ func (r *OrderRepo) AddItem(it *models.OrderItem) error {
 
 func (or *OrderRepo) FindByUserID(userID int) ([]models.Order, error) {
 	rows, err := or.DB.Query(`
-		SELECT id, total, status, created_at
+		SELECT id, user_id, total, status, created_at
 		FROM orders
 		WHERE user_id = $1
 		ORDER BY created_at DESC
@@ -36,7 +36,7 @@ func (or *OrderRepo) FindByUserID(userID int) ([]models.Order, error) {
 	var orders []models.Order
 	for rows.Next() {
 		var o models.Order
-		if err := rows.Scan(&o.ID, &o.Total, &o.Status, &o.CreatedAt); err != nil {
+		if err := rows.Scan(&o.ID, &o.UserID, &o.Total, &o.Status, &o.CreatedAt); err != nil {
 			return nil, err
 		}
 		orders = append(orders, o)
