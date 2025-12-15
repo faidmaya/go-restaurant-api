@@ -135,13 +135,6 @@ Berikut adalah alur kerja REST API pada Restaurant API:
     }
   ]
 }
-Harga menu diambil langsung dari database, bukan dari input user.
-
-Response
-{
-  "order_id": 1,
-  "total": 10000
-}
 
 ---
 
