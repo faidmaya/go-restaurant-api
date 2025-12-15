@@ -16,6 +16,18 @@ func (r *MenuRepo) Create(m *models.Menu) error {
 	return r.DB.QueryRow(q, m.Name, m.Description, m.Price, m.CategoryID).Scan(&m.ID, &m.CreatedAt)
 }
 
+func (r *MenuRepo) GetByID(id int) (*models.Menu, error) {
+	var m models.Menu
+	err := r.DB.QueryRow(
+		`SELECT id, price FROM menus WHERE id=$1`, id,
+	).Scan(&m.ID, &m.Price)
+
+	if err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
 func (r *MenuRepo) GetAll() ([]models.Menu, error) {
 	rows, err := r.DB.Query(`SELECT id,name,description,price,category_id,created_at FROM menus`)
 	if err != nil {

@@ -24,7 +24,7 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 	authC := controllers.NewAuthController(userRepo)
 	categoryC := controllers.NewCategoryController(categoryRepo)
 	menuC := controllers.NewMenuController(menuRepo)
-	orderC := controllers.NewOrderController(orderRepo)
+	orderC := controllers.NewOrderController(orderRepo, menuRepo)
 
 	// ====== PUBLIC ROUTES ======
 	r.GET("/", func(c *gin.Context) {
@@ -42,7 +42,7 @@ func SetupRouter(db *sql.DB) *gin.Engine {
 
 	// ====== ADMIN ROUTES (JWT) ======
 	admin := r.Group("/admin")
-	admin.Use(middlewares.JWTMiddleware())
+	admin.Use(middlewares.JWTMiddleware(), middlewares.AdminOnly())
 	{
 		admin.POST("/categories", categoryC.Create)
 		admin.POST("/menus", menuC.Create)

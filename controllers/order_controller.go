@@ -11,10 +11,17 @@ import (
 
 type OrderController struct {
 	OrderRepo *repositories.OrderRepo
+	MenuRepo  *repositories.MenuRepo
 }
 
-func NewOrderController(or *repositories.OrderRepo) *OrderController {
-	return &OrderController{OrderRepo: or}
+func NewOrderController(
+	or *repositories.OrderRepo,
+	mr *repositories.MenuRepo,
+) *OrderController {
+	return &OrderController{
+		OrderRepo: or,
+		MenuRepo:  mr,
+	}
 }
 
 type createOrderReq struct {
@@ -51,6 +58,13 @@ func (oc *OrderController) Create(c *gin.Context) {
 		it := &in.Items[i]
 		it.OrderID = order.ID
 
+		menu, err := oc.MenuRepo.GetByID(it.MenuID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "menu not found"})
+			return
+		}
+
+		it.Price = menu.Price
 		if err := oc.OrderRepo.AddItem(it); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
