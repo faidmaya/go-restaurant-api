@@ -5,7 +5,7 @@ Project ini dibuat sebagai **Final Project Backend** dan sudah **terdeploy di Ra
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 - Go 1.20
 - Gin Gonic
 - PostgreSQL
@@ -14,7 +14,7 @@ Project ini dibuat sebagai **Final Project Backend** dan sudah **terdeploy di Ra
 
 ---
 
-## 📌 Features
+## Features
 - User Registration & Login
 - JWT Authentication
 - Role-based Authorization (Admin & Customer)
@@ -135,7 +135,7 @@ Berikut adalah alur kerja REST API pada Restaurant API:
     }
   ]
 }
-
+```
 ---
 
 ## Environment Variables
